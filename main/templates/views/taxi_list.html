@@ -1,0 +1,583 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% load custom_filters %}
+{% block HeroImage %}{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f6f9fc;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 40px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .main-content {
+        flex: 3;
+    }
+
+    .filter-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .filter-section select,
+    .filter-section input {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        min-width: 180px;
+        flex: 1;
+    }
+
+    .filter-section button {
+        background-color: #2551b0ff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        flex: 0 0 auto;
+    }
+
+    .filter-section button:hover {
+        background-color: #191f83ff;
+    }
+
+    .taxi-card {
+        background: #ffffff;
+        display: flex;
+        flex-direction: row;
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        align-items: center;
+        gap: 16px;
+        position: relative;
+        padding-bottom: 40px;
+    }
+
+    .taxi-card img {
+    width: 220px;           /* Fixed width for all images */
+    height: 160px;          /* Keeps the height consistent */
+    object-fit: cover;      /* Ensures image covers area without distortion */
+    border-radius: 10px;
+    flex-shrink: 0;         /* Prevents shrinking in flex layouts */
+    }
+
+    .taxi-details h2 {
+        margin-top: 0;
+        margin-bottom: 6px;
+        font-size: 20px;
+        color: #333;
+    }
+
+    .taxi-details p {
+        margin: 3px 0;
+        color: #555;
+    }
+
+    .taxi-details strong {
+        color: #000;
+    }
+
+    .toggle-details {
+        margin-top: 10px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .toggle-details:hover {
+        background-color: #218838;
+    }
+    .book-now {
+        margin-top: 10px;
+        background-color: #2551b0ff;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .book-now:hover {
+        background-color: #191f83ff;
+    }
+
+    .sidebar {
+        flex: 1;
+    }
+
+    .sidebar-section {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-section h4 {
+        margin-top: 0;
+        color: #6c63ff;
+    }
+
+    .sidebar-section ul {
+        padding-left: 20px;
+        color: #333;
+        font-size: 15px;
+    }
+
+    .city-thumbnail {
+        float: right;
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-left: auto;
+    }
+
+    #cityThumbnailContainer img {
+    width: 100%;
+    max-height: 160px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    padding: 20px 10px;
+  }
+
+  .main-content,
+  .sidebar {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .taxi-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .taxi-card img {
+    width: 100%;           /* Image fills width in mobile view */
+    height: auto;          /* Adjusts height proportionally */
+  }
+  .filter-section {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filter-section select,
+  .filter-section input,
+  .filter-section button {
+    min-width: 100%;
+    width: 100%;
+    flex: none;
+  }
+
+  .toggle-details,
+  .book-now {
+    width: px;
+  }
+
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    order: -1; /* Moves the sidebar to top on mobile */
+    width: 100%;
+  }
+
+  .sidebar-section {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  /* Optional: Hide some less important sections on mobile */
+  .sidebar-section:not(:first-child) {
+    display: none;
+  }
+  #extraSidebarContent {
+    display: none;
+  }
+
+  .sidebar-section {
+    padding: 15px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-section h4 {
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+
+  .sidebar-section ul {
+    padding-left: 15px;
+  }
+
+  /* City thumbnail image style for mobile */
+  #cityThumbnailContainer img {
+    max-height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  /* Ensure route preview is visible */
+  #routePreview {
+    font-size: 14px;
+    margin-top: 10px;
+  }
+}
+
+</style>
+
+
+<div class="container">
+    <div class="main-content">
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <select id="carTypeFilter">
+                <option value="">All Car Types</option>
+                <option value="SEDAN">Sedan</option>
+                <option value="SEDAN_ETIOS">Sedan Etios</option>
+                <option value="MARUTI SUZUKI">Maruti Suzuki</option>
+                <option value="SWIFT">Swift</option>
+                <option value="XUV">XUV</option>
+                <option value="INNOVA">Innova</option>
+                <option value="INNOVA_CRYSTA">Innova Crysta</option>
+                <option value="ERTIGA">Ertiga</option>
+                <option value="HYCROSS">Hycross</option>
+                <option value="TEMPO_16">Tempo Traveler 16 Seater</option>
+                <option value="TEMPO_18">Tempo Traveler 18 Seater</option>
+            </select>
+
+            <select id="packageFilter">
+                <option value="">All Packages</option>
+                <option value="Mini Ride - 4h/40km">Mini Ride - 4h/40km</option>
+                <option value="Half Day - 8h/80km">Half Day - 8h/80km</option>
+                <option value="Full Day - 12h/120km">Full Day - 12h/120km</option>
+                <option value="Custom">Custom</option>
+            </select>
+
+            <input type="text" name="source_city" id="source_city" class="form-control" placeholder="Source City" autocomplete="off"
+       list="cityList" value="{{ source_city }}">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; width: 100%;">
+    <div id="destinationFields" style="display: flex; flex-wrap: wrap; gap: 10px; flex: 1;">
+        <input type="text" name="destinationCity" class="destinationCityInput" placeholder="Destination City" autocomplete="off" list="cityList">
+    </div>
+    <button type="button" onclick="addDestinationField()" title="Add More Destinations"
+        style="background-color: #28a745; color: white; padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer;">
+        +
+    </button>
+</div>
+<datalist id="cityList"></datalist>
+
+
+            <button onclick="filterTaxis()">Search</button>
+        </div>
+
+        <!-- Taxi Cards -->
+        <div id="taxiList">
+            {% for taxi in taxis %}
+            <div class="taxi-card"
+                data-type="{{ taxi.car_type|lower }}"
+                data-package="{{ taxi.package_info|lower }}"
+                data-source="{{ taxi.source_city|default_if_none:''|lower }}"
+                data-destinations="{{ taxi.destination_cities|default_if_none:''|lower }}">
+    
+                <img src="{{ taxi.image.url }}" alt="{{ taxi.name }}">
+    
+                <div class="taxi-details" style="flex: 1;">
+                    <h2>{{ taxi.name }}</h2>
+                    <p><strong>{{ taxi.get_car_type_display }}</strong></p>
+                    <p>Packages: {{ taxi.package_info }}</p>
+                    <p>Charged: {{ taxi.charge_info }}</p>
+                    <p><strong>₹{{ taxi.price }}</strong> Inc. GST & DA</p>
+
+                    <button class="toggle-details" onclick="toggleDetails(this)">View More</button>
+
+                    <div class="terms-conditions" style="display: none; margin-top: 10px; font-size: 15px; background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                        <h6>Terms & Conditions</h6>
+                        <ul style="padding-left: 20px; list-style-type: '✓ '; line-height: 1.8;">
+                            <li>One day means one calendar day (12 midnight to 12 midnight).</li>
+                            <li>Kilometers and Hours will be calculated from garage to garage.</li>
+                            <li>Toll, Parking, Inter State Permit etc. not included in the above cost, you have to pay extra as applicable.</li>
+                            <li>Extra km applicable after charged km.</li>
+                            <li>Extra driver allowance if cab used before 6:00AM and after 10:00PM.</li>
+                        </ul>
+                    </div>
+
+                    <a href="{% url 'booking-detail' taxi.id %}">
+                        <button class="book-now">Book Now</button>
+                    </a>
+                </div>
+                <div style="position: absolute; bottom: 10px; right: 10px; display: flex; align-items: center;">
+                    {% if taxi.num_ratings > 0 %}
+                        <span style="background-color: #4CAF50; color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 13px; display: inline-flex; align-items: center;">
+                            {{ taxi.average_rating }}<span style="margin-left: 4px;">★</span>
+                        </span>
+                        <span style="color: gray; font-size: 13px; margin-left: 6px;">
+                            ({{ taxi.num_ratings|intcomma }})
+                        </span>
+                    {% else %}
+                        <span style="color: gray; font-size: 13px;">No ratings yet</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+<div class="sidebar-section" id="cityThumbnailContainer" style="text-align: center;">
+    <h3>OUR SERVICES</h3>
+    <!-- Existing city thumbnail image will be injected here -->
+    <div id="routePreview" style="margin-top: 15px; font-weight: bold; color: #444;"></div>
+</div>
+<!-- Hidden initially on mobile -->
+  <div id="extraSidebarContent">
+    <div class="sidebar-section">
+      <h4>Clean Cabs</h4>
+      <ul>
+        <li>Hygienic and sanitized vehicles</li>
+        <li>Comfortable seating for all</li>
+        <li>AC & Non-AC options</li>
+      </ul>
+      <h4>Professional Drivers</h4>
+      <ul>
+        <li>Trained and courteous</li>
+        <li>Well-versed with routes</li>
+        <li>24x7 customer support</li>
+      </ul>
+      <h4>Transparent Pricing</h4>
+      <ul>
+        <li>No hidden charges</li>
+        <li>Inclusive of GST</li>
+        <li>Flexible packages</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Toggle button -->
+  <button id="toggleSidebarBtn" class="book-now" style="margin-top: 10px; width: 100%;">View More Info</button>
+
+
+    </div>
+</div>
+
+<script>
+    function toggleDetails(button) {
+        const details = button.nextElementSibling;
+        const isVisible = details.style.display === "block";
+        details.style.display = isVisible ? "none" : "block";
+        button.innerText = isVisible ? "View More" : "Hide Details";
+    }
+
+    async function loadCities() {
+        const response = await fetch("{% url 'city_autocomplete' %}");
+        const cities = await response.json();
+        const datalist = document.getElementById("cityList");
+        datalist.innerHTML = "";
+        cities.forEach(city => {
+            const option = document.createElement("option");
+            option.value = city;
+            datalist.appendChild(option);
+        });
+    }
+
+    function addDestinationField() {
+        const container = document.getElementById("destinationFields");
+        const input = document.createElement("input");
+        input.type = "text";
+        input.name = "destinationCity";
+        input.placeholder = "Destination City";
+        input.className = "destinationCityInput form-control";
+        input.autocomplete = "off";
+        input.setAttribute("list", "cityList");
+        input.style.padding = "10px 15px";
+        input.style.border = "1px solid #ccc";
+        input.style.borderRadius = "8px";
+        input.style.fontSize = "15px";
+        input.style.minWidth = "180px";
+        container.appendChild(input);
+    }
+
+    function filterTaxis() {
+        const carType = document.getElementById('carTypeFilter').value.toLowerCase();
+        const packageInfo = document.getElementById('packageFilter').value.toLowerCase();
+        const sourceCity = document.getElementById('source_city').value.toLowerCase();
+        const destInputs = document.querySelectorAll('.destinationCityInput');
+        const selectedDestCities = Array.from(destInputs).map(input => input.value.toLowerCase().trim()).filter(Boolean);
+        const taxiCards = document.querySelectorAll('.taxi-card');
+
+        taxiCards.forEach(card => {
+            const cardType = card.dataset.type;
+            const cardPackage = card.dataset.package;
+            const cardSource = card.dataset.source;
+            const cardDestinationsRaw = card.dataset.destinations || "";
+            const cardDestinationsList = cardDestinationsRaw.split(',').map(d => d.trim().toLowerCase());
+
+            const matchType = !carType || cardType === carType;
+            const matchPackage = !packageInfo || cardPackage.includes(packageInfo);
+            const matchSource = !sourceCity || cardSource.includes(sourceCity);
+
+            let matchDest = true;
+            if (selectedDestCities.length > 0) {
+                matchDest = selectedDestCities.some(userCity =>
+                    cardDestinationsList.includes(userCity)
+                );
+            }
+
+            if (matchType && matchPackage && matchSource && matchDest) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const cityData = JSON.parse('{{ city_data_json|safe|escapejs }}');
+    const sourceInput = document.getElementById("source_city");
+    const container = document.getElementById("cityThumbnailContainer");
+    const routePreview = document.getElementById("routePreview");
+
+function updateCityPreview() {
+    const sourceCity = sourceInput.value.trim();
+    const sourceKey = sourceCity.toLowerCase();
+    const destInputs = document.querySelectorAll(".destinationCityInput");
+    const destCities = Array.from(destInputs)
+        .map(input => input.value.trim())
+        .filter(city => city.length > 0);
+
+    // Thumbnail Image
+    if (sourceCity && cityData[sourceKey]) {
+        container.innerHTML = `
+            <h3>OUR SERVICES</h3>
+            <img src="${cityData[sourceKey]}" alt="${sourceCity}" style="width: 100%; border-radius: 10px; object-fit: cover; max-height: 160px;">
+        `;
+    } else if (sourceCity) {
+        container.innerHTML = `<h3>OUR SERVICES</h3><p style='color: #999;'>No image available for "${sourceCity}"</p>`;
+    } else {
+        container.innerHTML = `<h3>OUR SERVICES</h3><p style='color: #999;'>Please enter a source city to see details.</p>`;
+    }
+
+    // Route Preview (without repeating source city)
+    if (sourceCity && destCities.length > 0) {
+        const route = `${sourceCity} to ${destCities.join(", ")}`;
+        routePreview.innerText = route;
+    } else {
+        routePreview.innerText = "";
+    }
+
+    container.appendChild(routePreview);  // Ensure route preview stays visible
+}
+
+// Trigger thumbnail update when a value is selected from autocomplete
+$("#source_city").on("autocompleteselect", function (event, ui) {
+  this.value = ui.item.value;
+  updateCityPreview();
+});
+
+// Also update on change (e.g., when user presses Enter)
+$("#source_city").on("change", function () {
+  updateCityPreview();
+});
+    document.addEventListener("input", function (e) {
+        if (e.target.classList.contains("destinationCityInput")) {
+            updateCityPreview();
+        }
+    });
+});
+
+
+
+$(function () {
+    // Autocomplete for source city
+    $("#source_city").autocomplete({
+      source: function (request, response) {
+        $.ajax({
+          url: "{% url 'city_autocomplete' %}",
+          data: {
+            q: request.term
+          },
+          success: function (data) {
+            response(data);
+          }
+        });
+      },
+      minLength: 2
+    });
+
+    // Function to apply autocomplete to all destination inputs
+    function applyAutocompleteToDestinations() {
+      $(".destinationCityInput").autocomplete({
+        source: function (request, response) {
+          $.ajax({
+            url: "{% url 'city_autocomplete' %}",
+            data: {
+              q: request.term
+            },
+            success: function (data) {
+              response(data);
+            }
+          });
+        },
+        minLength: 2
+      });
+    }
+
+    // Initially apply autocomplete
+    applyAutocompleteToDestinations();
+
+    // Reapply on newly added destination fields
+    $(document).on("click", "button[title='Add More Destinations']", function () {
+      setTimeout(applyAutocompleteToDestinations, 100); // delay for DOM insertion
+    });
+  });
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('toggleSidebarBtn');
+    const extraContent = document.getElementById('extraSidebarContent');
+
+    toggleBtn.addEventListener('click', function () {
+      const isVisible = extraContent.style.display === 'block';
+      extraContent.style.display = isVisible ? 'none' : 'block';
+      toggleBtn.textContent = isVisible ? 'View More Info' : 'Hide Info';
+    });
+  });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,281 @@
+{% extends 'base/ride_base.html' %}
+{% load static %}
+{% block title %}Round Trip · Taxi Wala{% endblock %}
+{% block HeroImage %}{% endblock %}
+
+{% block hero %}
+<div class="hero fade-in text-center">
+  <h1>Round Trip – सफर जो लौटकर आता है</h1>
+  <p>Taxi Wala के साथ प्लान करें आरामदायक और किफ़ायती यात्रा</p>
+</div>
+{% endblock %}
+
+{% block search_fields %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-11 shadow p-4 rounded bg-white">
+<form class="row g-3 align-items-end" method="POST" action="">
+  {% csrf_token %}
+
+  <!-- Source City -->
+  <div class="col-md-3">
+    <label class="form-label"><i class="fa-solid fa-city me-1"></i> Source City</label>
+    <input type="text" class="form-control" name="source_city" placeholder="Enter Source City" required />
+  </div>
+
+  <!-- Destination Container -->
+  <div id="destination-row" class="d-flex flex-row align-items-end flex-wrap gap-2 col-md-auto">
+    <div class="destination-group">
+      <label class="form-label"><i class="fa-solid fa-location-dot me-1"></i> Destination City</label>
+      <div class="input-group">
+        <input type="text" class="form-control" name="destination[]" placeholder="Enter Destination City" required />
+        <button type="button" class="btn btn-outline-danger" onclick="removeDestination(this)">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Destination Button -->
+  <div class="col-md-1">
+    <button type="button" class="btn btn-outline-secondary" onclick="addDestination()">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+
+  <!-- Pickup Date -->
+  <div class="col-md-2">
+    <label class="form-label"><i class="fa-solid fa-calendar-days me-1"></i> Pickup Date</label>
+    <input type="datetime-local" class="form-control" name="pickup_datetime" required />
+  </div>
+
+  <!-- Return Date -->
+  <div class="col-md-2">
+    <label class="form-label"><i class="fa-solid fa-calendar-check me-1"></i> Return Date</label>
+    <input type="datetime-local" class="form-control" name="return_datetime" required />
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-phone me-1"></i> Contact Number</label>
+    <input type="text" name="contact_number" class="form-control" placeholder="Enter Contact Number" required>
+  </div>
+  
+  <!-- Submit -->
+  <div class="col-md-1">
+    <button class="btn btn-warning w-100" type="submit">
+      <i class="fas fa-taxi"></i>
+    </button>
+  </div>
+</form>
+
+
+
+<!-- Destination Container for new entries -->
+<div id="destination-container" class="row g-3 mt-2 align-items-end"></div>
+
+
+    </div>
+  </div>
+</div>
+
+<!-- JS to add more destination fields -->
+<script>
+  function addDestination() {
+    const container = document.getElementById('destination-row');
+    const group = document.createElement('div');
+    group.className = 'destination-group';
+
+    group.innerHTML = `
+      <label class="form-label"><i class="fa-solid fa-location-dot me-1"></i> Destination City</label>
+      <div class="input-group">
+        <input type="text" class="form-control" name="destination[]" placeholder="Enter Destination City" required />
+        <button type="button" class="btn btn-outline-danger" onclick="removeDestination(this)">
+          <i class="fa-solid fa-minus"></i>
+        </button>
+      </div>
+    `;
+
+    container.appendChild(group);
+  }
+
+  function removeDestination(btn) {
+    btn.closest('.destination-group').remove();
+  }
+</script>
+{% endblock %}
+
+{% block city_grid %}
+<div class="container mb-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-road text-warning me-2"></i>Popular Round Trip Routes</h3>
+  <div class="city-scroll d-flex overflow-auto gap-3 pb-2">
+    {% for city in city_pages %}
+    <div class="city-card-rect flex-shrink-0 text-center">
+      <a href="{% url 'city_detail' city.slug %}">
+        <img src="{{ city.thumbnail_image.url }}" alt="{{ city.name }}" class="city-img-hover" />
+        <h5 class="mt-2">{{ city.name|upper }}</h5>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="text-center mt-4">
+  <a href="{% url 'all_cities' %}" class="btn btn-outline-warning px-4 py-2">
+    Explore More Cities
+  </a>
+</div>
+
+
+<style>
+  .city-scroll::-webkit-scrollbar {
+    height: 10px;
+  }
+  .city-scroll::-webkit-scrollbar-thumb {
+    background: #ffc107;
+    border-radius: 4px;
+  }
+  .city-card-rect {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    flex: 0 0 auto;
+    transition: transform 0.3s ease;
+  }
+  .city-card-rect:hover {
+    transform: translateY(-5px);
+  }
+  .city-card-rect a {
+  color: inherit;
+  text-decoration: none;
+  }
+  .city-card-rect a:hover {
+  color: inherit;
+  text-decoration: none;
+  }
+  .city-img-hover {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .city-img-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  @media (max-width: 576px) {
+  .feature-boxes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .feature {
+    width: 60%;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .hero p {
+    font-size: 1rem !important;
+  }
+
+  .city-card-rect {
+    width: 90% !important;
+  }
+
+  .city-img-hover {
+    height: 120px !important;
+  }
+
+  .form-label,
+  input,
+  select,
+  .form-control {
+    font-size: 0.95rem !important;
+  }
+.table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      min-width: 600px; /* or 100% if columns are short */
+    }
+
+    .table th,
+    .table td {
+      white-space: nowrap;
+    }
+
+  .city-scroll {
+    padding-bottom: 1rem !important;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block features %}
+<div class="feature-boxes d-flex justify-content-around text-center mb-5">
+  <div class="feature">
+    <h5><i class="fa-solid fa-money-check-dollar text-warning me-1"></i> Cost-Effective Packages</h5>
+    <p>Enjoy complete round trip savings</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-user-shield text-warning me-1"></i> Verified Drivers</h5>
+    <p>Experienced & professional chauffeurs</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-location-crosshairs text-warning me-1"></i> Live Trip Tracking</h5>
+    <p>Monitor your travel in real-time</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block after_features %}
+<div class="container my-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-circle-info text-warning me-2"></i> Why Round Trip with Taxi Wala?</h3>
+  <p class="lead text-center mb-4">
+    Simplify your back-and-forth journey with <strong>Taxi Wala</strong> – ideal for family tours, work travel & weekend returns.
+  </p>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <ul class="list-group list-group-flush shadow-sm">
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Doorstep pickup & drop</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Pay for distance traveled</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Clean & comfortable AC cars</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> 24x7 customer support</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Pre-planned packages to 100+ cities</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <h5 class="mb-3"><i class="fa-solid fa-suitcase-rolling text-warning me-2"></i> Best Suited For:</h5>
+      <ul class="list-group shadow-sm">
+        <li class="list-group-item"><i class="fa-solid fa-umbrella-beach text-warning me-2"></i> Weekend Holidays</li>
+        <li class="list-group-item"><i class="fa-solid fa-handshake text-warning me-2"></i> Business Round Trips</li>
+        <li class="list-group-item"><i class="fa-solid fa-person-walking-luggage text-warning me-2"></i> Pilgrimage Travel</li>
+        <li class="list-group-item"><i class="fa-solid fa-people-group text-warning me-2"></i> Family Outings</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <h4><i class="fa-solid fa-phone-volume text-primary me-2"></i> How to Book a Round Trip?</h4>
+    <ol>
+      <li>Fill source, destinations, and dates</li>
+      <li>Pick cab type and package</li>
+      <li>Confirm your booking</li>
+      <li>Enjoy your round journey!</li>
+    </ol>
+    <h5 class="text-success mt-4"><i class="fa-solid fa-tags me-2"></i> Return Early? Get credits for unused kms!</h5>
+  </div>
+</div>
+{% endblock %}

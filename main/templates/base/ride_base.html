@@ -1,0 +1,642 @@
+{% extends 'base/base.html' %} {% load static %} 
+{% block title %}Taxi Wala · Ride With Bharat{% endblock %} 
+{% block content %} 
+{% block head_extra %} {%endblock %}
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery UI for Autocomplete -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<style>
+  /* === Shared Styles (kept as-is) === */
+  body {
+    background: linear-gradient(135deg, #fff9e6, #ffe6cc);
+    font-family: "Poppins", sans-serif;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 1s ease forwards;
+  }
+  .slide-up {
+    animation: slideUp 1.2s ease forwards;
+  }
+
+  .hero {
+    background-image: url("{% static 'images/banner.png' %}");
+    background-size: cover;
+    background-position: center;
+    padding: 6rem 2rem;
+    color: white;
+    text-align: center;
+    border-radius: 0 0 40px 40px;
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.35);
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  .hero p {
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+
+  .ride-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 2rem;
+    list-style: none;
+    margin: 0;
+  }
+
+  .ride-tabs li {
+    background-color: #fff8dc;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, background-color 0.3s;
+  }
+
+  .ride-tabs li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    width: 100%;
+    height: 100%;
+    line-height: 120px;
+    border-radius: 50%;
+  }
+
+  .ride-tabs li:hover {
+    transform: scale(1.05);
+  }
+
+  .ride-tabs li.selected {
+    background-color: #ffcc70; /* Highlight color for selected */
+    transform: scale(1.05);
+  }
+  .feature-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    padding: 2rem;
+  }
+
+  .feature {
+    background: #fff8dc;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 220px;
+  }
+  /* Horizontal CTA Button Styling */
+  .book-now-btn {
+    background: #ffc107;
+    color: #000;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 12px 28px;
+    border-radius: 50px;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .book-now-btn:hover {
+    background: #ffb300;
+    color: #000;
+    box-shadow: 0 6px 20px rgba(255, 179, 0, 0.5);
+    transform: scale(1.05);
+  }
+
+  .cta-bar {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    backdrop-filter: blur(2px);
+  }
+
+  /* 🌙 Dark Mode Overrides */
+[data-theme="dark"] body {
+  background: linear-gradient(135deg, #1c1c1c, #2a2a2a);
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .hero {
+  background-image: url("{% static 'images/banner.png' %}");
+  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="dark"] .hero h1,
+[data-theme="dark"] .hero p {
+  color: #fff;
+}
+
+[data-theme="dark"] .ride-tabs li {
+  background-color: #333;
+  color: #fff;
+}
+
+[data-theme="dark"] .ride-tabs li.selected {
+  background-color: #f0b90b;
+  color: #000;
+}
+
+[data-theme="dark"] .ride-tabs li a {
+  color: #f8f8f8;
+}
+
+[data-theme="dark"] .feature {
+  background-color: #2e2e2e;
+  color: #f2f2f2;
+}
+
+[data-theme="dark"] .cta-bar {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f2f2f2;
+}
+
+[data-theme="dark"] .book-now-btn {
+  background-color: #ffc107;
+  color: #000;
+}
+
+[data-theme="dark"] .book-now-btn:hover {
+  background-color: #ffb300;
+}
+
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .shadow,
+[data-theme="dark"] .shadow-sm {
+  background-color: #2e2e2e !important;
+  color: #f1f1f1;
+}
+
+[data-theme="dark"] .list-group-item {
+  background-color: #2e2e2e;
+  color: #f1f1f1;
+  border-color: #444;
+}
+
+[data-theme="dark"] .table {
+  background-color: #2b2b2b;
+  color: #eee;
+}
+
+[data-theme="dark"] .table-bordered th,
+[data-theme="dark"] .table-bordered td {
+  border-color: #555;
+}
+
+[data-theme="dark"] .table-warning {
+  background-color: #3d3d00;
+  color: #ffd700;
+}
+
+[data-theme="dark"] .btn-outline-warning {
+  color: #ffc107;
+  border-color: #ffc107;
+}
+
+[data-theme="dark"] .btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #000;
+}
+
+[data-theme="dark"] .city-card-rect {
+  background-color: #2d2d2d;
+  color: #f5f5f5;
+}
+
+[data-theme="dark"] .city-card-rect a {
+  color: inherit;
+}
+
+
+@media (max-width: 576px) {
+  .hero {
+    padding: 3rem 1rem;
+    border-radius: 0 0 20px 20px;
+    box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+    line-height: 1.3;
+  }
+
+  .hero p {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .ride-tabs {
+    gap: 0.75rem;
+    padding: 2rem;
+  }
+
+  .ride-tabs li {
+    width: 120px;
+    height: 50px;
+    border-radius: 8px;
+  }
+
+  .ride-tabs li a {
+    line-height: 50px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+  }
+
+  .feature-boxes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .feature {
+    width: 48%;
+  }
+
+  .book-now-btn {
+    display: block;
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px 0;
+    text-align: center;
+  }
+
+  .cta-bar {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    text-align: center;
+  }
+}
+
+</style>
+
+<!-- 🚖 Hero Section -->
+{% block hero %}
+<div class="hero fade-in">
+  <h1>आपका सफर, हमारी जिम्मेदारी</h1>
+  <p>विश्वसनीयता, सुविधा और सुरक्षा — Taxi Wala के साथ</p>
+</div>
+{% endblock %}
+
+<!-- 🚖 Horizontal CTA with Styled Button -->
+<div class="d-flex justify-content-center align-items-center flex-wrap gap-3 mt-4 cta-bar">
+  <span class="fs-5 fw-semibold text-white text-center text-md-start">
+    Ready to ride? Book your taxi now:
+  </span>
+  <a href="{% url 'taxi-list' %}" class="book-now-btn">
+    <i class="fas fa-taxi me-2"></i> Book Now
+  </a>
+</div>
+
+<!-- 🧭 Navigation Tabs -->
+{% block navigation %}
+<nav>
+  <ul class="ride-tabs">
+    <li class="{% if request.path == '/local-rental/' %}selected{% endif %}">
+      <a href="{% url 'local_rental' %}">Local Rental</a>
+    </li>
+    <li class="{% if request.path == '/one-way/' %}selected{% endif %}">
+      <a href="{% url 'one_way' %}">One Way</a>
+    </li>
+    <li class="{% if request.path == '/round-trip/' %}selected{% endif %}">
+      <a href="{% url 'round_trip' %}">Round Trip</a>
+    </li>
+    <li class="{% if request.path == '/road-trip/' %}selected{% endif %}">
+      <a href="{% url 'road_trip' %}">Road Trip</a>
+    </li>
+    <li class="{% if request.path == '/local-transfer/' %}selected{% endif %}">
+      <a href="{% url 'local_transfer' %}">Local Transfer</a>
+    </li>
+  </ul>
+</nav>
+{% endblock %}
+
+<!-- 🔍 Search Fields Section -->
+{% block search_fields %}
+<!-- 📝 Booking Form - Styled like Package Form -->
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 shadow p-4 rounded bg-white">
+<form method="POST" action="{% url 'taxi-list' %}" class="row g-3 align-items-end">
+  {% csrf_token %}
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-map-location-dot me-1"></i> From</label>
+    {{ form.source_city }}
+  </div>
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-car me-1"></i> Ride Type</label>
+    {{ form.ride_type }}
+  </div>
+  <div class="col-md-3">
+    <label class="form-label"><i class="fa-solid fa-clock me-1"></i> Pickup Date & Time</label>
+    {{ form.pickup_datetime }}
+  </div>
+  <div class="col-md-1">
+    <button class="btn btn-warning w-100" type="submit">
+      <i class="fas fa-taxi"></i>
+    </button>
+  </div>
+</form>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(function() {
+    $("#source_city").autocomplete({
+      source: function(request, response) {
+        $.ajax({
+          url: "{% url 'city_autocomplete' %}",
+          data: {
+            q: request.term
+          },
+          success: function(data) {
+            response(data);
+          }
+        });
+      },
+      minLength: 2, // start suggesting after typing 2 characters
+    });
+  });
+</script>
+
+{% endblock %}
+
+<!-- 🏙️ City Grid -->
+{% block city_grid %}
+<div class="container mb-5">
+  <h3 class="text-center mb-4">
+    <i class="fa-solid fa-location-dot me-2 text-warning"></i>Most Booked Cities
+  </h3>
+  <div class="city-scroll d-flex overflow-auto gap-3 pb-2">
+    {% for city in city_pages %}
+    <div class="city-card-rect flex-shrink-0 text-center">
+      <a href="{% url 'city_detail' city.slug %}">
+        <img src="{{ city.thumbnail_image.url }}" alt="{{ city.name }}" class="city-img-hover" />
+        <h5 class="mt-2">{{ city.name|upper }}</h5>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="text-center mt-4">
+  <a href="{% url 'all_cities' %}" class="btn btn-outline-warning px-4 py-2">
+    Explore More Cities
+  </a>
+</div>
+<style>
+  .city-scroll::-webkit-scrollbar {
+    height: 10px;
+  }
+  .city-scroll::-webkit-scrollbar-thumb {
+    background: #ffc107;
+    border-radius: 4px;
+  }
+  .city-card-rect {
+    background: #fff;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    flex: 0 0 auto;
+    transition: transform 0.3s ease;
+  }
+  .city-card-rect:hover {
+    transform: translateY(-5px);
+  }
+    .city-card-rect a {
+    color: inherit; /* inherit color from parent */
+    text-decoration: none; /* removes underline */
+  }
+
+  .city-card-rect a:hover {
+    color: inherit; /* avoid hover turning blue */
+    text-decoration: none;
+  }
+  .city-img-hover {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .city-img-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+</style>
+{% endblock %}
+
+<!-- 🌟 Features Section -->
+{% block features %}
+<div
+  class="feature-boxes d-flex justify-content-around text-center flex-wrap gap-4 mb-5">
+  <div class="feature p-3 rounded shadow-sm bg-light" style="width: 180px">
+    <h5><i class="fa-solid fa-clock text-warning me-1"></i> Local Rental</h5>
+    <p>घूमिए अपने शहर में घंटों के हिसाब से</p>
+  </div>
+  <div class="feature p-3 rounded shadow-sm bg-light" style="width: 180px">
+    <h5>
+      <i class="fa-solid fa-arrow-right-arrow-left text-warning me-1"></i> One
+      Way
+    </h5>
+    <p>सिर्फ एक तरफ़ की यात्रा करें, किफ़ायती में</p>
+  </div>
+  <div class="feature p-3 rounded shadow-sm bg-light" style="width: 180px">
+    <h5><i class="fa-solid fa-repeat text-warning me-1"></i> Round Trip</h5>
+    <p>आवागमन दोनों ओर का, आराम से</p>
+  </div>
+  <div class="feature p-3 rounded shadow-sm bg-light" style="width: 180px">
+    <h5>
+      <i class="fa-solid fa-mountain-sun text-warning me-1"></i> Road Trip
+    </h5>
+    <p>लंबी दूरी की यात्रा, दोस्तों के साथ मज़ेदार</p>
+  </div>
+  <div class="feature p-3 rounded shadow-sm bg-light" style="width: 180px">
+    <h5>
+      <i class="fa-solid fa-right-left text-warning me-1"></i> Local Transfer
+    </h5>
+    <p>शहर के अंदर आसान स्थानांतरण</p>
+  </div>
+</div>
+{% endblock %}
+
+<!-- 📦 After Features (Custom Content Per Page) -->
+{% block after_features %}
+<div class="container my-5">
+  <h3 class="text-center mb-4">
+    <i class="fa-solid fa-car-side text-warning me-2"></i> Why Choose Taxi Wala?
+  </h3>
+  <p class="lead text-center mb-4">
+    Airport transfers, outstation trips, local rides or business travel —
+    <strong>Taxi Wala</strong> is your trusted mobility partner across India.
+  </p>
+
+  <!-- Benefits & Service List -->
+  <div class="row g-4">
+    <div class="col-md-6">
+      <ul class="list-group list-group-flush shadow-sm">
+        <li class="list-group-item">
+          <i class="fa-solid fa-circle-check text-success me-2"></i> Easy online
+          booking across 100+ cities
+        </li>
+        <li class="list-group-item">
+          <i class="fa-solid fa-user-tie text-success me-2"></i> Verified,
+          professional drivers
+        </li>
+        <li class="list-group-item">
+          <i class="fa-solid fa-gas-pump text-success me-2"></i> Fuel-inclusive
+          transparent pricing
+        </li>
+        <li class="list-group-item">
+          <i class="fa-solid fa-clock-rotate-left text-success me-2"></i> 24x7
+          customer support
+        </li>
+        <li class="list-group-item">
+          <i class="fa-solid fa-star text-success me-2"></i> Rated 4.8★ by
+          10,000+ customers
+        </li>
+      </ul>
+    </div>
+
+    <!-- Service Categories -->
+    <div class="col-md-6">
+      <h5 class="mb-3">
+        <i class="fa-solid fa-list-ul text-warning me-2"></i> Our Services:
+      </h5>
+      <table class="table table-bordered table-hover shadow-sm">
+        <thead class="table-warning">
+          <tr>
+            <th>Service</th>
+            <th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <i class="fa-solid fa-clock me-2 text-primary"></i> Local Rental
+            </td>
+            <td>Hourly city travel & errands</td>
+          </tr>
+          <tr>
+            <td>
+              <i class="fa-solid fa-arrow-right-arrow-left me-2 text-info"></i>
+              One Way
+            </td>
+            <td>Outstation drop to another city</td>
+          </tr>
+          <tr>
+            <td>
+              <i class="fa-solid fa-retweet me-2 text-success"></i> Round Trip
+            </td>
+            <td>Return same-day or multi-day journey</td>
+          </tr>
+          <tr>
+            <td>
+              <i class="fa-solid fa-plane-arrival me-2 text-warning"></i>
+              Airport Transfers
+            </td>
+            <td>On-time pickups & drops</td>
+          </tr>
+          <tr>
+            <td>
+              <i class="fa-solid fa-tree-city me-2 text-danger"></i> City to
+              City Road Trips
+            </td>
+            <td>Explore tourist destinations</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Ideal Use Cases -->
+  <div class="mt-5">
+    <h4><i class="fa-solid fa-thumbs-up me-2 text-success"></i> Ideal For:</h4>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <i class="fa-solid fa-city text-warning me-2"></i> Daily City Commutes
+      </div>
+      <div class="col-md-4">
+        <i class="fa-solid fa-plane-departure text-warning me-2"></i> Airport
+        Pickups & Drops
+      </div>
+      <div class="col-md-4">
+        <i class="fa-solid fa-umbrella-beach text-warning me-2"></i> Weekend
+        Getaways
+      </div>
+      <div class="col-md-4">
+        <i class="fa-solid fa-handshake text-warning me-2"></i> Corporate Travel
+      </div>
+      <div class="col-md-4">
+        <i class="fa-solid fa-heart text-warning me-2"></i> Weddings & Events
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Guide -->
+  <div class="mt-5">
+    <h4>
+      <i class="fa-solid fa-phone-volume me-2 text-primary"></i> How to Book?
+    </h4>
+    <ol>
+      <li>Visit our website or use the mobile app</li>
+      <li>Select your ride type and package</li>
+      <li>Choose pickup time & location</li>
+      <li>Get instant confirmation – your cab is on the way!</li>
+    </ol>
+
+    <h5 class="text-success mt-4">
+      <i class="fa-solid fa-tags me-2"></i> Ongoing Offers: Up to 20% off on
+      first ride & multi-day bookings!
+    </h5>
+  </div>
+</div>
+{% endblock %}
+
+
+{% endblock %}

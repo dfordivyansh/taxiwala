@@ -1,0 +1,236 @@
+{% extends 'base/ride_base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Road Trip Taxi · Taxi Wala{% endblock %}
+{% block HeroImage %}{% endblock %}
+
+{% block hero %}
+<div class="hero fade-in text-center">
+  <h1>Road Trips – सफर यादगार बनाएं</h1>
+  <p>लंबी दूरी के लिए आरामदायक टैक्सी सेवाएं</p>
+</div>
+{% endblock %}
+
+{% block search_fields %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 shadow p-4 rounded bg-white">
+<form method="POST" class="row g-3 align-items-end">
+  {% csrf_token %}
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-city me-1"></i> Start City</label>
+    {{ form.start_city }}
+  </div>
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-map me-1"></i> Route / Destination</label>
+    {{ form.destination }}
+  </div>
+  <div class="col-md-3">
+    <label class="form-label"><i class="fa-solid fa-calendar-days me-1"></i> Start Date & Time</label>
+    {{ form.start_datetime }}
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-phone me-1"></i> Contact Number</label>
+    {{ form.contact_number }}
+  </div>
+
+  <div class="col-md-1">
+    <button class="btn btn-warning w-100" type="submit">
+      <i class="fas fa-car"></i>
+    </button>
+  </div>
+</form>
+
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block city_grid %}
+<div class="container mb-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-mountain-sun me-2 text-warning"></i>Popular Road Trip Routes</h3>
+  <div class="city-scroll d-flex overflow-auto gap-3 pb-2">
+    {% for city in city_pages %}
+    <div class="city-card-rect flex-shrink-0 text-center">
+      <a href="{% url 'city_detail' city.slug %}">
+        <img src="{{ city.thumbnail_image.url }}" alt="{{ city.name }}" class="city-img-hover" />
+        <h5 class="mt-2">{{ city.name|upper }}</h5>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="text-center mt-4">
+  <a href="{% url 'all_cities' %}" class="btn btn-outline-warning px-4 py-2">
+    Explore More Cities
+  </a>
+</div>
+
+<style>
+  .city-scroll::-webkit-scrollbar {
+    height: 10px;
+  }
+  .city-scroll::-webkit-scrollbar-thumb {
+    background: #ffc107;
+    border-radius: 4px;
+  }
+  .city-card-rect {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    flex: 0 0 auto;
+    transition: transform 0.3s ease;
+  }
+  .city-card-rect:hover {
+    transform: translateY(-5px);
+  }
+  .city-card-rect a {
+  color: inherit;
+  text-decoration: none;
+  }
+  .city-card-rect a:hover {
+  color: inherit;
+  text-decoration: none;
+  }
+  .city-img-hover {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .city-img-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  @media (max-width: 576px) {
+  .feature-boxes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .feature {
+    width: 60%;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .hero p {
+    font-size: 1rem !important;
+  }
+
+  .city-card-rect {
+    width: 90% !important;
+  }
+
+  .city-img-hover {
+    height: 120px !important;
+  }
+
+  .form-label,
+  input,
+  select,
+  .form-control {
+    font-size: 0.95rem !important;
+  }
+.table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      min-width: 600px; /* or 100% if columns are short */
+    }
+
+    .table th,
+    .table td {
+      white-space: nowrap;
+    }
+
+  .city-scroll {
+    padding-bottom: 1rem !important;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block features %}
+<div class="feature-boxes d-flex justify-content-around text-center mb-5">
+  <div class="feature">
+    <h5><i class="fa-solid fa-route text-warning me-1"></i> Flexible Routes</h5>
+    <p>Customize your road journey</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-mug-hot text-warning me-1"></i> Comfortable Rides</h5>
+    <p>AC cabs, plenty of stops</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-headset text-warning me-1"></i> 24x7 Assistance</h5>
+    <p>Your comfort is our priority</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block after_features %}
+<div class="container my-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-route text-warning me-2"></i> Why Choose One Way Cabs?</h3>
+  <p class="lead text-center mb-4">
+    Planning a one-way journey? Save more and travel better with <strong>Taxi Wala's One Way Taxi Service</strong> – no return fare stress!
+  </p>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <ul class="list-group list-group-flush shadow-sm">
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Verified drivers & live trip tracking</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Clean, sanitized, AC/non-AC cars</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Instant confirmations via SMS & WhatsApp</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Flexible routes and 24/7 availability</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Door-to-door pickup & drop convenience</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <h5 class="mb-3"><i class="fa-solid fa-star text-warning me-2"></i> Top Benefits of One Way Trips with TaxiWala:</h5>
+      <ul class="list-group list-group-flush shadow-sm">
+        <li class="list-group-item"><i class="fa-solid fa-road text-info me-2"></i> Ideal for relocations or one-time visits</li>
+        <li class="list-group-item"><i class="fa-solid fa-gas-pump text-info me-2"></i> Save time with non-stop direct rides</li>
+        <li class="list-group-item"><i class="fa-solid fa-clock text-info me-2"></i> Book anytime — we're available 24/7</li>
+        <li class="list-group-item"><i class="fa-solid fa-shield-heart text-info me-2"></i> Safety-first service with tracking</li>
+        <li class="list-group-item"><i class="fa-solid fa-comments-dollar text-info me-2"></i> Transparent communication & support</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <h4><i class="fa-solid fa-circle-info me-2 text-primary"></i> Ideal For:</h4>
+    <div class="row g-3">
+      <div class="col-md-4"><i class="fa-solid fa-graduation-cap me-2 text-warning"></i> College & University Transfers</div>
+      <div class="col-md-4"><i class="fa-solid fa-handshake-simple me-2 text-warning"></i> Business Meetings & Interviews</div>
+      <div class="col-md-4"><i class="fa-solid fa-truck-medical me-2 text-warning"></i> Hospital or Specialist Visits</div>
+      <div class="col-md-4"><i class="fa-solid fa-people-roof me-2 text-warning"></i> Visiting Family & Relatives</div>
+      <div class="col-md-4"><i class="fa-solid fa-plane-arrival me-2 text-warning"></i> Airport or Railway Drop Services</div>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <h4><i class="fa-solid fa-phone-volume me-2 text-success"></i> How to Book?</h4>
+    <ol>
+      <li>Enter your pickup & drop locations</li>
+      <li>Select your desired time and vehicle</li>
+      <li>Fill in contact details and preferences</li>
+      <li>Receive confirmation and driver details instantly</li>
+    </ol>
+    <h5 class="text-success mt-4"><i class="fa-solid fa-badge-percent me-2"></i> Exclusive Tip: Book early to get your preferred cab and time slot!</h5>
+  </div>
+</div>
+{% endblock %}

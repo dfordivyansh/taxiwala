@@ -1,0 +1,206 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}Enquiry · Taxi Wala{% endblock %}
+{% block HeroImage %}{% endblock %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(135deg, #fff4e1, #ffd6a5); /* Softer Yellow-Orange Gradient */
+  }
+
+  #enquiry .logo {
+    animation: pulse 2.5s infinite ease-in-out;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.07); }
+  }
+
+  #enquiry .card {
+    border: none;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+
+  #enquiry h2 {
+    font-weight: 700;
+    color: #333;
+  }
+
+  #enquiry .lead {
+    font-size: 1.1rem;
+    color: #666;
+  }
+
+  #enquiry form label {
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #444;
+  }
+
+  #enquiry .form-control,
+  #enquiry .form-select {
+    border-radius: 12px;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+  }
+
+  #enquiry .form-control:focus,
+  #enquiry .form-select:focus {
+    border-color: #ff9800;
+    box-shadow: 0 0 8px rgba(255, 152, 0, 0.3);
+  }
+
+  #enquiry textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  #enquiry button[type="submit"] {
+    background: #FF8F00;
+    color: white;
+    font-weight: bold;
+    padding: 12px 40px;
+    border: none;
+    border-radius: 50px;
+    transition: background 0.3s ease, transform 0.2s;
+  }
+
+  #enquiry button[type="submit"]:hover {
+    background: #e67600;
+    transform: translateY(-2px);
+  }
+
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-section .col-md-6 {
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 576px) {
+    #enquiry button[type="submit"] {
+      width: 100%;
+    }
+  }
+
+  [data-theme="dark"] body {
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a); /* Dark gradient */
+  color: #e4e4e4;
+}
+
+[data-theme="dark"] #enquiry .card {
+  background-color: #2c2c2c;
+  color: #e4e4e4;
+  box-shadow: 0 15px 35px rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] #enquiry h2,
+[data-theme="dark"] #enquiry .lead,
+[data-theme="dark"] #enquiry label {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] #enquiry .form-control,
+[data-theme="dark"] #enquiry .form-select {
+  background-color: #1f1f1f;
+  color: #e4e4e4;
+  border: 1px solid #555;
+}
+
+[data-theme="dark"] #enquiry .form-control:focus,
+[data-theme="dark"] #enquiry .form-select:focus {
+  border-color: #ff9800;
+  box-shadow: 0 0 8px rgba(255, 152, 0, 0.4);
+}
+
+[data-theme="dark"] #enquiry textarea {
+  background-color: #1f1f1f;
+  color: #e4e4e4;
+}
+
+[data-theme="dark"] #enquiry button[type="submit"] {
+  background-color: #ffa000;
+  color: white;
+}
+
+[data-theme="dark"] #enquiry button[type="submit"]:hover {
+  background-color: #e67600;
+}
+
+[data-theme="dark"] #enquiry a {
+  color: #ffd700;
+}
+
+[data-theme="dark"] #enquiry .text-muted {
+  color: #bbb !important;
+}
+
+</style>
+
+<div class="container py-5" id="enquiry">
+  <div class="text-center mb-5">
+    <img src="{% static 'images/logotaxi.png' %}" alt="Taxi Wala Logo" height="80" class="logo" />
+    <h2 class="mt-3">Enquiry Page</h2>
+    <p class="lead">We provide sanitized cars with healthy drivers.</p>
+    <p><strong>Dial 24x7:</strong> +91-63873 05588<span class="text-muted">(Charges Apply)</span></p>
+    <p><strong>Email Us:</strong> <a href="mailto:taxiwalla670@gmail.com">taxiwalla670@gmail.com</a></p>
+  </div>
+
+  <div class="card shadow-sm p-4">
+<form method="POST" action="/enquiry/" class="px-md-3">
+      {% csrf_token %}
+      <div class="row form-section">
+        <div class="col-md-6">
+          {{ form.name.label_tag }}
+          {{ form.name|add_class:"form-control" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.mobile.label_tag }}
+          {{ form.mobile|add_class:"form-control" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.email.label_tag }}
+          {{ form.email|add_class:"form-control" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.pickup_city.label_tag }}
+          {{ form.pickup_city|add_class:"form-control" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.vehicle.label_tag }}
+          {{ form.vehicle|add_class:"form-select" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.travellers.label_tag }}
+          {{ form.travellers|add_class:"form-control" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.pickup_date.label_tag }}
+          {{ form.pickup_date|add_class:"form-control" }}
+        </div>
+        <div class="col-md-6">
+          {{ form.drop_date.label_tag }}
+          {{ form.drop_date|add_class:"form-control" }}
+        </div>
+      </div>
+
+      <div class="form-section">
+        {{ form.trip_details.label_tag }}
+        {{ form.trip_details|add_class:"form-control" }}
+      </div>
+
+      <div class="text-center mt-4">
+        <button type="submit">Submit Enquiry</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+

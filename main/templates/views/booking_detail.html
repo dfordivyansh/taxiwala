@@ -1,0 +1,253 @@
+{% extends 'base/base.html' %}
+{% block HeroImage %}{% endblock %}
+{% load static %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+{% block content %}
+<style>
+  .booking-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .booking-box {
+    flex: 1;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    min-width: 300px;
+  }
+
+  .booking-box h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #6c63ff;
+  }
+
+  .booking-box p {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #555;
+  }
+
+  label {
+    font-size: 14px;
+    color: #333;
+  }
+
+  input[type="text"], input[type="email"], input[type="file"], textarea {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+  }
+
+  .submit-btn {
+    background-color: #6c63ff;
+    color: white;
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .fare-box {
+    background-color: #eee9ff;
+    padding: 12px;
+    margin-top: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .checkbox-label input {
+    margin-right: 6px;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-content h4 {
+    margin-top: 0;
+    color: #6c63ff;
+  }
+
+  .modal-content ul {
+    padding-left: 20px;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  .close-modal {
+    background: #6c63ff;
+    color: white;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 4px;
+    margin-top: 15px;
+    cursor: pointer;
+  }
+
+  .terms-link {
+    color: #6c63ff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+</style>
+
+<div class="booking-container">
+
+  <!-- Left Side: Booking Form -->
+  <div class="booking-box">
+    <h2>Billing Details</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      <label>Full Name:</label>
+      {{ form.full_name }}
+
+      <label>Mobile No:</label>
+      {{ form.mobile }}
+
+      <label>Email:</label>
+      {{ form.email }}
+
+      <label>Pickup Location:</label>
+      {{ form.pickup_location }}
+
+      <label>Pickup Date & Time:</label>
+      {{ form.pickup_datetime }}
+
+      <label>Payment Method:</label>
+      {{ form.payment_method }}
+
+      <label>Upload Payment Screenshot (optional):</label>
+      {{ form.payment_screenshot }}
+
+      <label class="checkbox-label">
+        {{ form.pay_later }} Book Now Pay Later
+      </label>
+
+      <label class="checkbox-label">
+        {{ form.accepted_terms }} I accept 
+        <span class="terms-link" onclick="showTerms()">Terms & Conditions</span>
+      </label>
+
+      <button type="submit" class="submit-btn">Book Now</button>
+    </form>
+  </div>
+
+  <!-- Right Side: Booking Summary -->
+  <div class="booking-box">
+    <h2>{{ booking.taxi_name }}</h2>
+    <p><strong>Trip From:</strong> {{ booking.trip_location }}</p>
+    <p><strong>Package Name:</strong> {{ booking.package_name }}</p>
+    <p><strong>Pickup Date & Time:</strong> {{ form.pickup_datetime.value|date:"d M Y, g:i A" }}</p>
+
+    <div class="fare-box">
+      <p><strong>Base Fare:</strong> ₹{{ booking.base_fare }}</p>
+      <p><strong>GST (5%):</strong> ₹{{ booking.gst }}</p>
+      <p><strong>Total Fare:</strong> ₹{{ booking.total_fare }}</p>
+      <hr>
+      <p><strong>Extra Km:</strong> ₹{{ booking.extra_km_rate }}/km</p>
+      <p><strong>Extra Hour:</strong> ₹{{ booking.extra_hour_rate }}/hour</p>
+    </div>
+
+    <div style="margin-top: 20px;">
+      <h4>Payment Instructions:</h4>
+
+      <div id="upiSection" style="display: none; margin-top: 15px;">
+        <label>Send to UPI ID:</label>
+        <input type="text" readonly value="chandranavneet153-1@oksbi" style="width: 100%; padding: 8px;">
+      </div>
+
+      <div id="qrSection" style="display: none; margin-top: 15px;">
+        <label>Scan QR:</label><br>
+        <img src="{% static 'images/QR.png' %}" alt="QR Code" style="width: 250px;">
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Terms -->
+<div id="termsModal" class="modal-overlay">
+  <div class="modal-content">
+    <h4>Terms & Conditions</h4>
+    <ul>
+      <li>One day means one calendar day (12 midnight to 12 midnight).</li>
+      <li>Kilometers and Hours will be calculated from garage to garage.</li>
+      <li>Toll, Parking, Inter State Permit etc. not included in the above cost, you have to pay extra as applicable.</li>
+      <li>Extra km applicable after charged km.</li>
+      <li>Extra driver allowance if cab used before 6:00AM and after 10:00PM.</li>
+    </ul>
+    <button class="close-modal" onclick="hideTerms()">Close</button>
+  </div>
+</div>
+
+<script>
+  function showTerms() {
+    document.getElementById("termsModal").style.display = "flex";
+  }
+
+  function hideTerms() {
+    document.getElementById("termsModal").style.display = "none";
+  }
+
+  document.getElementById("termsModal").addEventListener("click", function (e) {
+    if (e.target === this) hideTerms();
+  });
+
+  document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+      updatePaymentDisplay(this.value);
+    });
+  });
+
+  function updatePaymentDisplay(method) {
+    document.getElementById("upiSection").style.display = "none";
+    document.getElementById("qrSection").style.display = "none";
+
+    if (method === "upi") {
+      document.getElementById("upiSection").style.display = "block";
+    } else if (method === "qr") {
+      document.getElementById("qrSection").style.display = "block";
+    }
+  }
+
+</script>
+
+{% endblock %}

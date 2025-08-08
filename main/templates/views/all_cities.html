@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+{% block HeroImage %}{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <h2 class="text-center fw-bold mb-5">
+    <i class="fa-solid fa-city text-warning me-2"></i>Explore All Cities
+  </h2>
+
+  <div class="row justify-content-center g-4">
+    {% for city in cities %}
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2-4">
+        <div class="card border-0 shadow-sm h-100 hover-card text-center city-card">
+          <a href="{% url 'city_detail' city.slug %}" class="text-decoration-none text-dark">
+            <img src="{{ city.thumbnail_image.url }}" class="card-img-top city-card-img" alt="{{ city.name }}">
+            <div class="card-body p-2">
+              <h6 class="card-title fw-semibold mb-0">{{ city.name|title }}</h6>
+            </div>
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  /* Custom class for 5-column layout */
+  @media (min-width: 992px) {
+    .col-lg-2-4 {
+      flex: 0 0 20%;
+      max-width: 20%;
+    }
+  }
+
+  .hover-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+  }
+
+  .city-card-img {
+    border-radius: 10px;
+    height: 140px;
+    object-fit: cover;
+  }
+
+  .city-card {
+    font-size: 0.9rem;
+  }
+</style>
+{% endblock %}

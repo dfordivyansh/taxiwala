@@ -1,0 +1,29 @@
+{% extends "base/base.html" %}
+{% block HeroImage %}{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: auto; text-align: center; background: #f9f9f9; padding: 40px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h1 style="color: #28a745;">✅ Booking Confirmed!</h1>
+    <p>Thank you, <strong>{{ booking_request.full_name }}</strong>.</p>
+    <p>Your booking for <strong>{{ booking_request.booking.taxi_name }}</strong> is confirmed.</p>
+    <p>Booking ID: <strong>TW{{ booking_request.booking.booking_id|stringformat:"s"|slice:"-6:" }}</strong></p>
+    <p>We will contact you shortly at <strong>{{ booking_request.mobile }}</strong>.</p>
+
+    <hr style="margin: 30px 0;">
+
+    <form action="{% url 'submit_rating' booking_request.booking.id %}" method="post">
+        {% csrf_token %}
+        <p><strong>Rate your ride:</strong></p>
+        {% for i in "12345" %}
+            <label><input type="radio" name="rating" value="{{ i }}"> {{ i }}⭐</label>
+        {% endfor %}
+        <br><br>
+        <button type="submit" style="background-color: #6c63ff; color: white; padding: 10px 20px; border: none; border-radius: 5px;">Submit Rating</button>
+    </form>
+    <a href="{{ whatsapp_url }}" target="_blank" style="display: inline-block; margin-top: 20px; background-color: #25D366; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+        📩 Get Confirmation on WhatsApp
+    </a>
+
+    <a href="/" style="margin-top: 30px; display: inline-block; color: white; background-color: #6c63ff; padding: 10px 20px; border-radius: 5px;">Back to Home</a>
+</div>
+{% endblock %}

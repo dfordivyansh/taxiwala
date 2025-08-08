@@ -1,0 +1,788 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Taxi Wala{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- jQuery UI for Autocomplete -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/taxiwala.css' %}" />
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  {% block extra_css %}{% endblock %}
+
+  <style>
+    /* =====✨ HEADER ===== */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 1050;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-logo img {
+      height: 70px;
+    }
+
+    .shadow-header {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .contact-number {
+      font-weight: bold;
+      color: #4b2e00;
+      font-size: 18px;
+    }
+
+    .whatsapp-btn {
+      background-color: #25d366;
+      color: white;
+      padding: 6px 16px;
+      font-weight: 600;
+      border-radius: 5px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease-in-out;
+      border: none;
+    }
+
+    .whatsapp-btn:hover {
+      background-color: #1da851;
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* =====📩 Enquiry Button ===== */
+    .enquiry-button {
+      position: fixed;
+      top: 40%;
+      right: 0;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      padding: 12px 6px;
+      font-size: 14px;
+      z-index: 9999; /* ensure it stays above all content */
+      background-color: #ffc107;
+      color: #000;
+      border: none;
+      border-radius: 6px 0 0 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+
+    /* =====🖼️ Hero Image Section ===== */
+    .image-section {
+      position: relative;
+      height: 90vh;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .bg-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    .image-gradient-filter {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(255, 223, 142, 0.4), rgba(0, 0, 0, 0.6));
+      z-index: 2;
+    }
+
+    .image-overlay {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      padding-top: 20vh;
+    }
+
+    .hero-quote {
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.4;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #ffffff;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ===== Chatbot ===== */
+    #chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+      padding-bottom: 10px;
+    }
+
+    #chatbot-toggle {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    #chatbot-toggle img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+
+    #chatbot-popup {
+      display: none;
+      flex-direction: column;
+      width: 340px;
+      height: 480px;
+      background-color: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      margin-bottom: 10px;
+    }
+
+    #chatbot-header {
+      background: linear-gradient(135deg, #e6bb2eff, #e3d680ff);
+      color: white;
+      padding: 12px 16px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #chatbot-header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    #chatbot-messages {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #f9f9f9;
+    }
+
+    .chat-bubble {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .user-msg {
+      align-self: flex-end;
+      background-color: #d87817ff;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bot-msg {
+      align-self: flex-start;
+      background-color: #e1eaf4;
+      color: #111;
+      border-bottom-left-radius: 4px;
+      position: relative;
+    }
+
+    .bot-loading::after {
+      content: "...";
+      animation: blink 1s infinite steps(1);
+      font-weight: bold;
+      margin-left: 6px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.2; }
+    }
+
+    #chatbot-input-area {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    #chatbot-input {
+      flex: 1;
+      border: none;
+      padding: 12px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .whatsapp-button {
+      display: inline-block;
+      padding: 10px 16px;
+      background-color: #25d366;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #chatbot-input-area button {
+      padding: 0 16px;
+      background-color: #d6330aff;
+      color: white;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      background: #2a2a2a;
+      color: #ccc;
+      padding: 3rem 2rem 1rem;
+    }
+
+    footer h5 {
+      color: #ffda00;
+      margin-bottom: 1rem;
+    }
+
+    footer a {
+      color: #eee;
+      text-decoration: none;
+      display: block;
+      margin: 0.3rem 0;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .footer-cols {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+
+
+    [data-theme="dark"] {
+  background-color: #121212;
+  color: #e4e4e4;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #1f1f1f !important;
+  color: #ddd !important;
+}
+
+[data-theme="dark"] .text-primary {
+  color: #e6eef9ff !important;
+}
+
+[data-theme="dark"] .shadow-header {
+  background-color: #1a1a1a !important;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] footer {
+  background: #101010;
+  color: #ccc;
+}
+
+[data-theme="dark"] a {
+  color: #ebf1fbff;
+}
+
+[data-theme="dark"] .btn-outline-dark {
+  border-color: #ccc;
+  color: #ccc;
+}
+
+[data-theme="dark"] .btn-outline-dark:hover {
+  background-color: #333;
+}
+
+[data-theme="dark"] .contact-number {
+  color: #ffcc70; /* Warm highlight color for visibility */
+  font-weight: bold;
+}
+
+[data-theme="dark"] #chatbot-popup {
+  background-color: #1e1e1e;
+  box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] #chatbot-header {
+  background: linear-gradient(135deg, #5c4d00, #bfae00);
+  color: #fff;
+}
+
+[data-theme="dark"] #chatbot-header button {
+  color: #fff;
+}
+
+[data-theme="dark"] #chatbot-messages {
+  background: #121212;
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] .chat-bubble.user-msg {
+  background-color: #ff8c00;
+  color: #fff;
+}
+
+[data-theme="dark"] .chat-bubble.bot-msg {
+  background-color: #2a2a2a;
+  color: #eee;
+}
+
+[data-theme="dark"] .bot-loading::after {
+  color: #fff;
+}
+
+
+
+/* 🔘 Dark Mode: Chatbot Input Area */
+[data-theme="dark"] #chatbot-input-area {
+  border-top: 1px solid #444;
+  background-color: #1f1f1f;
+}
+
+/* 🔘 Dark Mode: Chatbot Text Input */
+[data-theme="dark"] #chatbot-input {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  border: none;
+}
+
+/* 🔘 Dark Mode: WhatsApp Button */
+[data-theme="dark"] .whatsapp-button {
+  background-color: #128c7e;
+  color: white;
+}
+
+/* 🔘 Dark Mode: Send Button */
+[data-theme="dark"] #chatbot-input-area button {
+  background-color: #b62b09;
+  color: white;
+}
+
+/* Optional: Input Placeholder Styling */
+[data-theme="dark"] #chatbot-input::placeholder {
+  color: #aaaaaa;
+}
+
+    /* ===== Mobile Responsiveness ===== */
+    @media (max-width: 768px) {
+      .header-logo img {
+        height: 50px;
+      }
+
+      .contact-number {
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      .whatsapp-btn {
+        padding: 6px 10px;
+        font-size: 14px;
+      }
+
+      .hero-quote {
+        font-size: 1.6rem;
+        padding: 0 1rem;
+      }
+
+      .image-section {
+        height: 60vh;
+      }
+
+      .image-overlay {
+        padding-top: 10vh;
+      }
+
+      .chat-bubble {
+        max-width: 90%;
+      }
+
+      #chatbot-popup {
+        width: 95%;
+        height: 80vh;
+        right: 10px;
+      }
+
+      #chatbot-toggle img {
+        width: 60px;
+        height: 60px;
+      }
+
+      .enquiry-button {
+        top: auto;
+        bottom: 80px;
+        right: 0;
+        transform: none;
+        writing-mode: horizontal-tb;
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+
+      .footer-cols {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+    }
+
+    /* CHATBOT FULLSCREEN ON MOBILE */
+@media (max-width: 576px) {
+  #chatbot-popup {
+    width: 100vw;
+    height: 100vh;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    position: fixed;
+    margin: 0;
+    border-radius: 0;
+    z-index: 10000;
+  }
+
+  #chatbot-header {
+    font-size: 18px;
+    padding: 16px;
+  }
+
+  #chatbot-toggle img {
+    width: 60px;
+    height: 60px;
+  }
+
+  #chatbot-input {
+    font-size: 15px;
+  }
+
+  .chat-bubble {
+    font-size: 15px;
+    max-width: 90%;
+  }
+
+  .enquiry-button {
+    writing-mode: horizontal-tb;
+    transform: none;
+    bottom: 90px;
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  .contact-number {
+    font-size: 13px;
+  }
+
+  .whatsapp-btn {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .footer-cols {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+    .image-section {
+    height: 45vh; /* or try 50vh depending on your layout */
+  }
+}
+
+  </style>
+</head>
+
+  <body>
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% endfor %} {% endif %}
+
+    <!-- 🚖 HEADER -->
+    <header class="sticky-header">
+<div class="container-fluid px-3 shadow-header">
+  <div class="d-flex justify-content-between align-items-center py-2 flex-wrap">
+    <!-- Logo -->
+    <div class="header-logo">
+      <a href="/">
+        <img src="{% static 'images/logotaxi.png' %}" alt="Taxi Wala Logo" class="img-fluid" />
+      </a>
+    </div>
+
+    <!-- Contact Number & WhatsApp -->
+    <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+      <span class="contact-number d-none d-sm-block">
+        <i class="bi bi-telephone-fill me-1"></i> +91-63940 05588
+      </span>
+      <a href="https://wa.me/916394005588" class="whatsapp-btn">
+        <i class="fab fa-whatsapp"></i> Contact Us
+      </a>
+      <!-- Dark/Light Mode Toggle -->
+      <button id="themeToggle" class="btn btn-outline-dark ms-2" title="Toggle Theme">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+    </header>
+    
+
+    <!-- 📩 Enquiry Button -->
+    <a
+      href="{% url 'enquiry' %}"
+      class="btn btn-warning position-fixed enquiry-button">
+      Enquiry
+    </a>
+
+    {% block HeroImage %}
+    <!-- 🖼️ Hero Image Section -->
+    <section class="image-section">
+      <img
+        src="{% static 'images/bgtrad.jpeg' %}"
+        alt="Background"
+        class="bg-image" />
+      <div class="image-gradient-filter"></div>
+
+      <div class="image-overlay">
+        <div class="hero-quote">
+          <br /><br />
+          जहां सफर हो खास, <br />Taxi Wala आपके साथ!
+        </div>
+      </div>
+    </section>
+    {% endblock %}
+
+
+
+    <!-- 🌐 Main Page Content -->
+    <main class="container py-4">{% block content %}{% endblock %}</main>
+
+    <!-- Chatbot -->
+    <div id="chatbot-container">
+      <button id="chatbot-toggle" onclick="toggleChatbot()">
+        <img src="{% static 'images/TaxiBot.png' %}" alt="Chatbot Icon" />
+      </button>
+      <div id="chatbot-popup">
+        <div id="chatbot-header">
+          <span>Taxi Bot</span>
+          <button onclick="toggleChatbot()">✖</button>
+        </div>
+        <div id="chatbot-messages"></div>
+        <div id="chatbot-input-area">
+          <input
+            type="text"
+            id="chatbot-input"
+            placeholder="Type your message..." />
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function toggleChatbot() {
+        const popup = document.getElementById("chatbot-popup");
+        popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+      }
+
+      function sendMessage() {
+        const input = document.getElementById("chatbot-input");
+        const message = input.value.trim();
+        if (message === "") return;
+
+        const messages = document.getElementById("chatbot-messages");
+
+        // Add user message
+        const userMsg = document.createElement("div");
+        userMsg.className = "chat-bubble user-msg";
+        userMsg.innerText = message;
+        messages.appendChild(userMsg);
+
+        // Add bot loading message
+        const botMsg = document.createElement("div");
+        botMsg.className = "chat-bubble bot-msg bot-loading";
+        botMsg.innerText = "Taxi Bot is typing";
+        messages.appendChild(botMsg);
+
+        messages.scrollTop = messages.scrollHeight;
+        input.value = "";
+
+        // Simulate delay before bot replies
+        setTimeout(() => {
+          fetch("/chatbot/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCSRFToken(),
+            },
+            body: JSON.stringify({ message }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              botMsg.classList.remove("bot-loading");
+              botMsg.innerText = data.reply;
+
+              // If WhatsApp button is suggested by bot
+              if (data.whatsapp_button && data.whatsapp_link) {
+                const whatsappBtn = document.createElement("a");
+                whatsappBtn.href = data.whatsapp_link;
+                whatsappBtn.target = "_blank";
+                whatsappBtn.className = "whatsapp-btn mt-2";
+                whatsappBtn.innerHTML =
+                  '<i class="fab fa-whatsapp"></i> Chat with us on WhatsApp';
+
+                const wrap = document.createElement("div");
+                wrap.classList.add("bot-msg", "chat-bubble");
+                wrap.appendChild(whatsappBtn);
+                messages.appendChild(wrap);
+              }
+
+              messages.scrollTop = messages.scrollHeight;
+            });
+        }, 2000); // 2 seconds delay
+      }
+
+      // Handle "Enter" key as send
+      document.addEventListener("DOMContentLoaded", () => {
+        const input = document.getElementById("chatbot-input");
+        input.addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+          }
+        });
+      });
+
+      function getCSRFToken() {
+        const cookie = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("csrftoken="));
+        return cookie ? cookie.split("=")[1] : "";
+      }
+      function toggleChatbot() {
+        const popup = document.getElementById("chatbot-popup");
+        popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+        popup.scrollTop = 0;
+      }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("themeToggle");
+  const icon = toggleBtn.querySelector("i");
+
+  // Apply saved theme
+  const savedTheme = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  if (savedTheme === "dark") {
+    icon.classList.replace("fa-moon", "fa-sun");
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    const htmlEl = document.documentElement;
+    const currentTheme = htmlEl.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+    htmlEl.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+
+    // Toggle icon
+    if (newTheme === "dark") {
+      icon.classList.replace("fa-moon", "fa-sun");
+    } else {
+      icon.classList.replace("fa-sun", "fa-moon");
+    }
+  });
+});
+
+
+  // Dynamically switch theme without full page reload
+  function toggleTheme() {
+    const htmlEl = document.documentElement;
+    const newTheme = htmlEl.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    htmlEl.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+  }
+
+  // Apply saved theme on page load
+  document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  });
+    </script>
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>
+<!-- 🔚 Footer -->
+ {% block footer %}
+<footer>
+  <div class="footer-cols">
+    <div>
+      <h5>🌐 Company</h5>
+      <a href="{% url 'about' %}">About Us</a>
+      <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+      <a href="{% url 'terms_and_conditions' %}">Terms & Conditions</a>
+      <a href="{% url 'careers' %}">Careers</a>
+    </div>
+    <div>
+      <h5>🛠 Services</h5>
+      <a href="#">One Way Taxi</a>
+      <a href="#">Round Trip Cab</a>
+      <a href="#">Airport Pickup</a>
+      <a href="#">Outstation Travel</a>
+      <a href="#">Hourly Rental</a>
+    </div>
+    <div>
+      <h5>📞 Contact</h5>
+      <p>+91-63940 05588</p>
+      <p>taxiwalla670@gmail.com</p>
+      <p>Mon-Sun: 7 AM - 11 PM</p>
+    </div>
+    <div>
+      <h5>💳 Secure Payment</h5>
+      <p>All payments are encrypted & protected.</p>
+    </div>
+  </div>
+  <p class="text-center mt-4">
+    © 2025 Taxi Wala · Desh Ka Apna Ride Partner 🚕
+  </p>
+</footer>
+{% endblock %}

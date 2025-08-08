@@ -1,0 +1,93 @@
+{% extends 'base/ride_base.html' %}
+{% load static %}
+{% block title %}About Us · Taxi Wala{% endblock %}
+{% block HeroImage %}{% endblock %}
+{% block hero %}
+<div class="hero fade-in text-center">
+  <h1>👋 About TaxiWala</h1>
+  <p>Driven by Passion, Powered by Trust</p>
+</div>
+{% endblock %}
+
+{% block search_fields %}
+<div class="container my-5 text-center">
+  <h4 class="text-muted">Founder & Director</h4>
+  <h2 class="text-primary">Navneet Chandra</h2>
+</div>
+{% endblock %}
+
+{% block city_grid %}
+<div class="container my-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-road text-warning me-2"></i>Our Journey</h3>
+  <p class="lead text-center">
+    At <strong>TaxiWala</strong>, we started with a simple vision – to make travel convenient, reliable, and affordable for every Indian.
+    What began as a small city service has now grown into a nationwide platform trusted by thousands.
+  </p>
+</div>
+{% endblock %}
+
+{% block features %}
+<style>
+  @media (max-width: 576px) {
+  .feature-boxes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .feature {
+    width: 60%;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .hero p {
+    font-size: 1rem !important;
+  }
+}
+</style>
+
+<div class="feature-boxes d-flex justify-content-around text-center mb-5">
+  <div class="feature">
+    <h5><i class="fa-solid fa-users text-warning me-1"></i> 5000+ Happy Customers</h5>
+    <p>Trusted by riders all over India</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-taxi text-warning me-1"></i> 100+ Cities Served</h5>
+    <p>Expanding to serve you better</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-headset text-warning me-1"></i> 24x7 Customer Support</h5>
+    <p>Always here for your travel needs</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block after_features %}
+<div class="container my-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-bullseye text-warning me-2"></i>Our Mission</h3>
+  <p class="lead text-center mb-4">
+    To transform urban mobility with digital-first taxi solutions, ensuring safety, punctuality, and transparency at every step.
+  </p>
+
+  <h4 class="text-center mb-3"><i class="fa-solid fa-eye text-primary me-2"></i>Our Vision</h4>
+  <p class="text-center">
+    To become India’s most loved and reliable taxi service brand by blending technology with hospitality.
+  </p>
+
+  <div class="mt-5">
+    <h4 class="text-success"><i class="fa-solid fa-handshake me-2"></i>Why Choose Us?</h4>
+    <ul class="list-group list-group-flush shadow-sm">
+      <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Transparent pricing</li>
+      <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Trained, verified drivers</li>
+      <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Clean and sanitized cars</li>
+      <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Instant invoice generation</li>
+      <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Easy online booking & tracking</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

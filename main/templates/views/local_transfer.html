@@ -1,0 +1,238 @@
+{% extends 'base/ride_base.html' %}
+{% load static %}
+{% block title %}Local Transfer Taxi · Taxi Wala{% endblock %}
+{% block HeroImage %}{% endblock %}
+
+{% block hero %}
+<div class="hero fade-in text-center">
+  <h1>Local Transfer – तेज़ और आरामदायक</h1>
+  <p>शहर के अंदर यात्रा अब आसान – Taxi Wala के साथ</p>
+</div>
+{% endblock %}
+
+{% block search_fields %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 shadow p-4 rounded bg-white">
+<form method="POST" class="row g-3 align-items-end">
+  {% csrf_token %}
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-city me-1"></i> Source City</label>
+    {{ form.source_city }}
+  </div>
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-location-arrow me-1"></i> Drop Location</label>
+    {{ form.drop_location }}
+  </div>
+  <div class="col-md-3">
+    <label class="form-label"><i class="fa-solid fa-clock me-1"></i> Pickup Time</label>
+    {{ form.pickup_time }}
+  </div>
+  <div class="col-md-4">
+    <label class="form-label"><i class="fa-solid fa-phone me-1"></i> Contact Number</label>
+    {{ form.contact_number }}
+  </div>
+  <div class="col-md-1">
+    <button class="btn btn-warning w-100" type="submit">
+      <i class="fas fa-taxi"></i>
+    </button>
+  </div>
+</form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block city_grid %}
+<div class="container mb-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-location-dot me-2 text-warning"></i>Major Local Transfer Cities</h3>
+  <div class="city-scroll d-flex overflow-auto gap-3 pb-2">
+    {% for city in city_pages %}
+    <div class="city-card-rect flex-shrink-0 text-center">
+      <a href="{% url 'city_detail' city.slug %}">
+        <img src="{{ city.thumbnail_image.url }}" alt="{{ city.name }}" class="city-img-hover" />
+        <h5 class="mt-2">{{ city.name|upper }}</h5>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="text-center mt-4">
+  <a href="{% url 'all_cities' %}" class="btn btn-outline-warning px-4 py-2">
+    Explore More Cities
+  </a>
+</div>
+
+<style>
+  .city-scroll::-webkit-scrollbar { height: 10px; }
+  .city-scroll::-webkit-scrollbar-thumb {
+    background: #ffc107;
+    border-radius: 4px;
+  }
+  .city-card-rect {
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    flex: 0 0 auto;
+    transition: transform 0.3s ease;
+  }
+  .city-card-rect:hover {
+    transform: translateY(-5px);
+  }
+  .city-card-rect a {
+  color: inherit;
+  text-decoration: none;
+  }
+  .city-card-rect a:hover {
+  color: inherit;
+  text-decoration: none;
+  }
+  .city-img-hover {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  .city-img-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  @media (max-width: 576px) {
+  .feature-boxes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .feature {
+    width: 60%;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .hero p {
+    font-size: 1rem !important;
+  }
+
+  .city-card-rect {
+    width: 90% !important;
+  }
+
+  .city-img-hover {
+    height: 120px !important;
+  }
+
+  .form-label,
+  input,
+  select,
+  .form-control {
+    font-size: 0.95rem !important;
+  }
+.table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      min-width: 600px; /* or 100% if columns are short */
+    }
+
+    .table th,
+    .table td {
+      white-space: nowrap;
+    }
+
+  .city-scroll {
+    padding-bottom: 1rem !important;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block features %}
+<div class="feature-boxes d-flex justify-content-around text-center mb-5">
+  <div class="feature">
+    <h5><i class="fa-solid fa-bolt text-warning me-1"></i> Fast Pickup</h5>
+    <p>Get cabs within minutes</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-location-dot text-warning me-1"></i> Doorstep Drop</h5>
+    <p>Anywhere in your city</p>
+  </div>
+  <div class="feature">
+    <h5><i class="fa-solid fa-headset text-warning me-1"></i> 24x7 Help</h5>
+    <p>Call anytime, we’re here</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block after_features %}
+<div class="container my-5">
+  <h3 class="text-center mb-4"><i class="fa-solid fa-route text-warning me-2"></i>Why Choose Local Transfer?</h3>
+  <p class="lead text-center mb-4">
+    Short distance? Office commute? Airport drop? Book instant local rides with Taxi Wala.
+  </p>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <ul class="list-group list-group-flush shadow-sm">
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Point-to-point service</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> 24/7 availability across cities</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Trained local drivers</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Fast airport, station, hotel pickups</li>
+        <li class="list-group-item"><i class="fa-solid fa-check text-success me-2"></i> Instant booking confirmation</li>
+      </ul>
+    </div>
+    <div class="col-md-6">
+      <h5 class="mb-3"><i class="fa-solid fa-city text-warning me-2"></i> Popular City Transfers:</h5>
+      <table class="table table-bordered table-hover shadow-sm d-none d-sm-table">
+        <thead class="table-warning">
+          <tr>
+            <th>City</th>
+            <th>Drop Point</th>
+            <th>Est. Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Delhi</td><td>IGI Airport</td><td>45 min</td></tr>
+          <tr><td>Lucknow</td><td>Charbagh Station</td><td>30 min</td></tr>
+          <tr><td>Mumbai</td><td>Andheri East</td><td>40 min</td></tr>
+          <tr><td>Chandigarh</td><td>Sector 17 Bus Stand</td><td>25 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <h4><i class="fa-solid fa-star me-2 text-primary"></i> Top Use Cases:</h4>
+    <div class="row g-3">
+      <div class="col-md-4"><i class="fa-solid fa-briefcase me-2 text-warning"></i> Office Transfers</div>
+      <div class="col-md-4"><i class="fa-solid fa-plane-departure me-2 text-warning"></i> Airport Drops</div>
+      <div class="col-md-4"><i class="fa-solid fa-school me-2 text-warning"></i> School Pickup</div>
+      <div class="col-md-4"><i class="fa-solid fa-shop me-2 text-warning"></i> Market Visits</div>
+      <div class="col-md-4"><i class="fa-solid fa-stethoscope me-2 text-warning"></i> Hospital Rides</div>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <h4><i class="fa-solid fa-phone-volume me-2 text-success"></i>How to Book?</h4>
+    <ol>
+      <li>Enter source and drop address</li>
+      <li>Select date & time</li>
+      <li>Choose cab and confirm</li>
+      <li>Cab arrives at your doorstep</li>
+    </ol>
+    <h5 class="text-success mt-4"><i class="fa-solid fa-info-circle me-2"></i> Tip: Book early for smooth and timely service!</h5>
+  </div>
+</div>
+{% endblock %}

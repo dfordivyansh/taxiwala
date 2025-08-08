@@ -1,0 +1,8 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.btn-warning {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}

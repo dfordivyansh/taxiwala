@@ -1,0 +1,124 @@
+{% extends "base/ride_base.html" %}
+{% load static %}
+{% load dict_extras %}
+{% load custom_filters %}
+
+{% block HeroImage %}
+{% endblock %}
+
+{% block content %}
+<style>
+  /* Set overall page background and text color */
+[data-theme="dark"] body {
+  background-color: #2b2b2b !important;  /* Medium-dark gray */
+  color: #ffffff !important;
+}
+
+/* Ensure all text inside is white */
+[data-theme="dark"] * {
+  color: #ffffff !important;
+}
+
+/* City header adjustments */
+[data-theme="dark"] .city-header {
+  background-color: rgba(0, 0, 0, 0.6);
+  background-blend-mode: overlay;
+}
+
+/* City content */
+[data-theme="dark"] .city-content {
+  color: #ffffff;
+}
+
+/* White container (override inline style) */
+[data-theme="dark"] div[style*="background: #fff"],
+[data-theme="dark"] .fare-wrapper,
+[data-theme="dark"] .city-fare-box {
+  background-color: #3a3a3a !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.05);
+}
+
+/* Headings */
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] .fare-table h2 {
+  color: #ffb74d !important;
+}
+
+/* Table styling */
+[data-theme="dark"] .fare-table .table {
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .fare-table .table thead {
+  background-color: #4a4a4a;
+  color: #ffa726;
+}
+
+[data-theme="dark"] .fare-table .table-hover tbody tr:hover {
+  background-color: #505050;
+}
+
+[data-theme="dark"] .fare-table .table-bordered td,
+[data-theme="dark"] .fare-table .table-bordered th {
+  border-color: #555;
+}
+
+</style>
+
+<div class="city-header" style="background-image: url('{% static 'images/banner_city.png' %}'); background-size: cover;">
+  <div class="container text-center py-5 text-white">
+    <h1>{{ city.name }}</h1>
+  </div>
+</div>
+
+<div class="container my-5">
+  <div class="city-content">
+    {{ city.description|safe }}
+  </div>
+</div>
+
+
+<div style="max-width: 1000px; margin: 40px auto; background: #fff; padding: 40px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+<div class="container">
+  <div class="container text-center py-5" style="color: #e4814b;">
+    <h1>{{ city.name }} Taxi Fare Sheet</h1>
+  </div>
+  <div class="row">
+    {% for category, label in category_labels.items %}
+      {% if fares_by_category|dictkey:category %}
+        <div class="col-md-4 mb-4">
+          <div class="fare-table h-100 p-3 border shadow-sm">
+            <h2 class="text-center mb-3">{{ label }}</h2>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Car Name</th>
+                    <th>Fare</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for fare in fares_by_category|get_item:category %}
+                    <tr>
+                      <td>{{ fare.car_name }}</td>
+                      <td>{{ fare.fare_amount }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+</div>
+
+
+{% endblock %}

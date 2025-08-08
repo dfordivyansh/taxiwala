@@ -1,0 +1,45 @@
+{% extends 'base/ride_base.html' %}
+{% load static %}
+{% block title %}Terms & Conditions · Taxi Wala{% endblock %}
+{% block HeroImage %}{% endblock %}
+
+{% block hero %}
+<div class="hero fade-in text-center">
+  <h1>📜 Terms & Conditions</h1>
+  <p>By using Taxi Wala, you agree to the following terms</p>
+</div>
+{% endblock %}
+
+{% block search_fields %}
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-10 shadow p-4 rounded bg-white">
+      <h4 class="mb-3">👤 Owner: <span class="text-primary">Navneet Chandra</span></h4>
+      <p class="lead">Welcome to TaxiWala. Please read the following terms and conditions carefully before using our services:</p>
+
+      <ul class="list-group list-group-flush mb-4">
+        <li class="list-group-item"><strong>Booking Confirmation:</strong> All bookings are subject to availability and will be confirmed via SMS/WhatsApp.</li>
+        <li class="list-group-item"><strong>Cancellation Policy:</strong> Free cancellations allowed up to 2 hours before scheduled pickup.</li>
+        <li class="list-group-item"><strong>Pricing:</strong> All prices include fuel and driver charges. Toll and parking extra.</li>
+        <li class="list-group-item"><strong>Liability:</strong> TaxiWala is not liable for delays caused by traffic or weather conditions.</li>
+        <li class="list-group-item"><strong>User Conduct:</strong> Any misconduct or abuse towards drivers will result in booking termination.</li>
+        <li class="list-group-item"><strong>Privacy:</strong> We respect your privacy. User data is protected and never shared.</li>
+
+        <!-- ✅ Newly added terms below -->
+        <li class="list-group-item"><strong>One Day Definition:</strong> One day means one calendar day (12 midnight to 12 midnight).</li>
+        <li class="list-group-item"><strong>Distance & Time Calculation:</strong> Kilometers and hours are calculated from garage to garage.</li>
+        <li class="list-group-item"><strong>Exclusions:</strong> Toll, parking, interstate permit, etc. are not included and must be paid separately by the customer.</li>
+        <li class="list-group-item"><strong>Extra KM Charges:</strong> Additional charges apply for kilometers traveled beyond the agreed package.</li>
+        <li class="list-group-item"><strong>Driver Allowance:</strong> Extra driver allowance is applicable if the cab is used before 6:00 AM or after 10:00 PM.</li>
+      </ul>
+
+      <h5 class="text-success mt-4"><i class="fa-solid fa-shield-alt me-2"></i>Trusted Travel Partner Across India</h5>
+      <p class="text-muted">For any questions, contact our support team. Thank you for riding with <strong>TaxiWala</strong>.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block city_grid %}{% endblock %}
+{% block features %}{% endblock %}
+{% block after_features %}{% endblock %}
